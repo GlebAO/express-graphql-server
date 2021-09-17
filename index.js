@@ -1,13 +1,17 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const cors = require('cors');
-const schema = require('./schema');
+const { readFileSync } = require('fs');
+const { buildSchema } = require('graphql');
 
 const users = [
   { id: 1, name: 'Gleb' },
   { id: 2, name: 'John' },
   { id: 3, name: 'Aleksei' },
 ];
+
+const schemaString = readFileSync('./schema.graphql', { encoding: 'utf8' });
+const schema = buildSchema(schemaString);
 
 const resolvers = {
   getAllUsers: () => {
@@ -18,7 +22,7 @@ const resolvers = {
   },
   createUser: ({ user }) => {
     const id = Date.now();
-    const newUser = {id, ...user}
+    const newUser = { id, ...user };
     users.push(newUser);
     return newUser;
   },
